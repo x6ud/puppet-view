@@ -18,7 +18,6 @@ public class Main {
         new Main().start();
     }
 
-    private Screenshot screenshot = new Screenshot(this::showImage);
     private List<ReferenceImage> referenceImageList = new LinkedList<>();
 
     private void start() throws Exception {
@@ -29,7 +28,7 @@ public class Main {
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                    screenshot.screenshot();
+                    new Screenshot(this::showImage).screenshot();
                 })
                 .menuItem("Load Clipboard", e -> {
                     BufferedImage image = Clipboard.getImage();
@@ -37,6 +36,8 @@ public class Main {
                         showImage(image);
                     }
                 })
+                .separator()
+                .menuItem("Flip All Horizontally", e -> referenceImageList.forEach(ReferenceImage::flipHorizontal))
                 .separator()
                 .menuItem("Show All", e -> setAllVisible(true))
                 .menuItem("Hide All", e -> setAllVisible(false))

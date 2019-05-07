@@ -86,13 +86,15 @@ public class ReferenceImage extends JFrame {
                 .checkboxMenuItem("Flip Horizontally", flipHorizontal, menuItem -> flipHorizontalMenu = menuItem,
                         e -> {
                             flipHorizontal = e.getStateChange() == ItemEvent.SELECTED;
-                            repaint();
+                            rotationDeg = (360 - rotationDeg) % 360;
+                            update();
                         }
                 )
                 .checkboxMenuItem("Flip Vertically", flipVertical, menuItem -> flipVerticalMenu = menuItem,
                         e -> {
                             flipVertical = e.getStateChange() == ItemEvent.SELECTED;
-                            repaint();
+                            rotationDeg = (360 - rotationDeg) % 360;
+                            update();
                         }
                 )
                 .separator()
@@ -241,6 +243,13 @@ public class ReferenceImage extends JFrame {
     public void close() {
         setVisible(false);
         dispose();
+    }
+
+    public void flipHorizontal() {
+        flipHorizontal = !flipHorizontal;
+        rotationDeg = (360 - rotationDeg) % 360;
+        flipHorizontalMenu.setState(flipHorizontal);
+        update();
     }
 
     /* ============================================== */

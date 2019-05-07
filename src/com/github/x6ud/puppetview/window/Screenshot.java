@@ -317,6 +317,7 @@ public class Screenshot extends JFrame {
     private void close() {
         repaintTimer.stop();
         setVisible(false);
+        super.dispose();
     }
 
     /**
