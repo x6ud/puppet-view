@@ -55,10 +55,11 @@ public class OcrUtils {
              * KOR
              */
             options.put("language_type", language);
-            options.put("detect_direction", "true");
-            options.put("detect_language", "true");
-            options.put("probability", "true");
-            JSONObject result = client.accurateGeneral(outputStream.toByteArray(), options);
+//            options.put("detect_direction", "true");
+//            options.put("detect_language", "true");
+//            options.put("probability", "true");
+//            JSONObject result = client.accurateGeneral(outputStream.toByteArray(), options);
+            JSONObject result = client.basicGeneral(outputStream.toByteArray(), options);
             int wordsResultNum = result.getInt("words_result_num");
             if (wordsResultNum > 0) {
                 JSONArray array = result.getJSONArray("words_result");
@@ -67,6 +68,7 @@ public class OcrUtils {
                     String words = object.getString("words");
                     stringBuilder.append(words);
                     if (i < len - 1) {
+                        stringBuilder.append('\n');
                         stringBuilder.append('\n');
                     }
                 }
