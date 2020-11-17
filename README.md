@@ -5,6 +5,28 @@ It's made for my own personal use. For similar software, [PureRef](https://www.p
 ![](./screenshot/1.png)
 ![](./screenshot/2.png)
 
+## OCR
+Get your APP ID on https://console.bce.baidu.com/
+
+Create `config.properties`
+```properties
+app.id=YOUR_APP_ID
+app.key=YOUR_APP_KEY
+app.secret=YOUR_APP_SECRET
+```
+
+See `com.github.x6ud.puppetview.OcrUtils`
+
+## Run
+```
+mvn clean compile exec:java
+```
+
+## Build
+```
+mvn clean compile assembly:single
+```
+
 ## Usage
 
 | Operation | Action |

@@ -2,12 +2,13 @@ package com.github.x6ud.puppetview;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Clipboard {
+public class ClipboardUtils {
 
     public static BufferedImage getImage() {
         Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -33,6 +34,11 @@ public class Clipboard {
         bGr.drawImage(img, 0, 0, null);
         bGr.dispose();
         return bimage;
+    }
+
+    public static void setString(String str) {
+        StringSelection selection = new StringSelection(str);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
 
 }

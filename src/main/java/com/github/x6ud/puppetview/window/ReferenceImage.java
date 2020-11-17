@@ -1,6 +1,6 @@
 package com.github.x6ud.puppetview.window;
 
-import com.github.x6ud.puppetview.Point2D;
+import com.github.x6ud.puppetview.Point;
 import com.github.x6ud.puppetview.PopupMenuBuilder;
 import com.sun.awt.AWTUtilities;
 
@@ -67,7 +67,7 @@ public class ReferenceImage extends JFrame {
         setAlwaysOnTop(true);
         setType(Type.UTILITY);
 
-        Point mouse = MouseInfo.getPointerInfo().getLocation();
+        java.awt.Point mouse = MouseInfo.getPointerInfo().getLocation();
         setLocation(
                 Math.max(0, mouse.x - imageWidth / 2),
                 Math.max(0, mouse.y - imageHeight / 2)
@@ -141,7 +141,7 @@ public class ReferenceImage extends JFrame {
 
         // event listeners
         {
-            Point dragStart = new Point();
+            java.awt.Point dragStart = new java.awt.Point();
 
             addMouseListener(new MouseAdapter() {
                 @Override
@@ -252,6 +252,13 @@ public class ReferenceImage extends JFrame {
         update();
     }
 
+    public void flipVertical() {
+        flipVertical = !flipVertical;
+        rotationDeg = (360 - rotationDeg) % 360;
+        flipVerticalMenu.setState(flipVertical);
+        update();
+    }
+
     /* ============================================== */
 
     private void scale(int diff) {
@@ -301,10 +308,10 @@ public class ReferenceImage extends JFrame {
         double sHeight = imageHeight * actualScale;
 
         // rect after rotate
-        Point2D v1 = new Point2D(0, 0);
-        Point2D v2 = rotatePointAroundOrigin(sWidth, 0, sin, cos);
-        Point2D v3 = rotatePointAroundOrigin(sWidth, sHeight, sin, cos);
-        Point2D v4 = rotatePointAroundOrigin(0, sHeight, sin, cos);
+        Point v1 = new Point(0, 0);
+        Point v2 = rotatePointAroundOrigin(sWidth, 0, sin, cos);
+        Point v3 = rotatePointAroundOrigin(sWidth, sHeight, sin, cos);
+        Point v4 = rotatePointAroundOrigin(0, sHeight, sin, cos);
 
         // shape AABB
         double left = Math.min(v1.x, Math.min(v2.x, Math.min(v3.x, v4.x)));
@@ -355,8 +362,8 @@ public class ReferenceImage extends JFrame {
         AWTUtilities.setWindowShape(this, windowShape);
     }
 
-    private Point2D rotatePointAroundOrigin(double x, double y, double sin, double cos) {
-        return new Point2D(
+    private Point rotatePointAroundOrigin(double x, double y, double sin, double cos) {
+        return new Point(
                 (int) (x * cos - y * sin),
                 (int) (x * sin + y * cos)
         );
