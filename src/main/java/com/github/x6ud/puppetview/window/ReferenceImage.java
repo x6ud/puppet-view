@@ -83,58 +83,54 @@ public class ReferenceImage extends JFrame {
 
         // right click menu
         PopupMenu popupMenu = MenuBuilder.popup();
-        flipHorizontalMenu = MenuBuilder.checkbox("Flip Horizontally", flipHorizontal, e -> {
+        flipHorizontalMenu = MenuBuilder.checkbox(popupMenu, "Flip Horizontally", flipHorizontal, e -> {
             flipHorizontal = e.getStateChange() == ItemEvent.SELECTED;
             rotationDeg = (360 - rotationDeg) % 360;
             update();
         });
-        popupMenu.add(flipHorizontalMenu);
-        flipVerticalMenu = MenuBuilder.checkbox("Flip Vertically", flipVertical, e -> {
+        flipVerticalMenu = MenuBuilder.checkbox(popupMenu, "Flip Vertically", flipVertical, e -> {
             flipVertical = e.getStateChange() == ItemEvent.SELECTED;
             rotationDeg = (360 - rotationDeg) % 360;
             update();
         });
-        popupMenu.add(flipVerticalMenu);
-        popupMenu.add(MenuBuilder.checkbox("Greyscale", greyscale, e -> {
+        MenuBuilder.checkbox(popupMenu, "Greyscale", greyscale, e -> {
             greyscale = e.getStateChange() == ItemEvent.SELECTED;
             repaint();
-        }));
+        });
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("1:1 Size", e -> {
+        MenuBuilder.item(popupMenu, "1:1 Size", e -> {
             scale = 1;
             update();
-        }));
-        popupMenu.add(MenuBuilder.item("Reset Rotation and Flip", e -> {
+        });
+        MenuBuilder.item(popupMenu, "Reset Rotation and Flip", e -> {
             rotationDeg = 0;
             flipHorizontal = false;
             flipVertical = false;
             flipHorizontalMenu.setState(false);
             flipVerticalMenu.setState(false);
             update();
-        }));
-        popupMenu.add(MenuBuilder.item("Reset Opacity", e -> {
+        });
+        MenuBuilder.item(popupMenu, "Reset Opacity", e -> {
             opacity = 1;
             update();
-        }));
+        });
         popupMenu.addSeparator();
-        collapsedMenu = MenuBuilder.checkbox("Collapsed", collapsed, e -> {
+        collapsedMenu = MenuBuilder.checkbox(popupMenu, "Collapsed", collapsed, e -> {
             collapsed = e.getStateChange() == ItemEvent.SELECTED;
             update();
         });
-        popupMenu.add(collapsedMenu);
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Copy to Clipboard", e -> {
+        MenuBuilder.item(popupMenu, "Copy to Clipboard", e -> {
             ClipboardUtils.setImage(image);
-        }));
+        });
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Hide", e -> {
+        MenuBuilder.item(popupMenu, "Hide", e -> {
             setVisible(false);
-        }));
-        popupMenu.add(MenuBuilder.item("Close", e -> {
+        });
+        MenuBuilder.item(popupMenu, "Close", e -> {
             close();
             closeCallback.accept(this);
-        }));
-
+        });
 
         // event listeners
         {

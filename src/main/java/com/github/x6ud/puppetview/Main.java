@@ -2,6 +2,7 @@ package com.github.x6ud.puppetview;
 
 import com.github.x6ud.puppetview.misc.ClipboardUtils;
 import com.github.x6ud.puppetview.misc.MenuBuilder;
+import com.github.x6ud.puppetview.window.ColorPicker;
 import com.github.x6ud.puppetview.window.ReferenceImage;
 import com.github.x6ud.puppetview.window.Screenshot;
 
@@ -15,55 +16,63 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
         new Main().start();
     }
 
     private List<ReferenceImage> referenceImageList = new LinkedList<>();
+    private String colorPickerMode = "html";
 
     private void start() throws Exception {
         PopupMenu popupMenu = MenuBuilder.popup();
-        popupMenu.add(MenuBuilder.item("Screenshot and Show", e -> {
-            try {
-                Thread.sleep(500); // wait for popup menu to disappear
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
+        MenuBuilder.item(popupMenu, "From Screenshot", e -> {
+            waitForPopupMenuToDisappear();
             new Screenshot(this::showImage).screenshot();
-        }));
-        popupMenu.add(MenuBuilder.item("Load Clipboard", e -> {
+        });
+        MenuBuilder.item(popupMenu, "Load Clipboard", e -> {
             BufferedImage image = ClipboardUtils.getImage();
             if (image != null) {
                 showImage(image);
             }
-        }));
+        });
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Screenshot", e -> {
-            try {
-                Thread.sleep(500); // wait for popup menu to disappear
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
+        MenuBuilder.item(popupMenu, "Screenshot", e -> {
+            waitForPopupMenuToDisappear();
             new Screenshot(ClipboardUtils::setImage).screenshot();
-        }));
+        });
+        MenuBuilder.item(popupMenu, "Pick Color", e -> {
+            waitForPopupMenuToDisappear();
+            new ColorPicker(colorPickerMode, ClipboardUtils::setString).pickColor();
+        });
+        MenuBuilder.radioGroup(
+                        MenuBuilder.menu(popupMenu, "Color Picker Mode"),
+                        colorPickerMode,
+                        mode -> {
+                            colorPickerMode = mode;
+                        })
+                .item("#ffffff", "html")
+                .item("0xffffff", "hex")
+                .item("rgb(255, 255, 255)", "css")
+                .item("255, 255, 255", "rgb");
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Flip All Horizontally", e -> referenceImageList.forEach(ReferenceImage::flipHorizontal)));
-        popupMenu.add(MenuBuilder.item("Flip All Vertically", e -> referenceImageList.forEach(ReferenceImage::flipVertical)));
+        MenuBuilder.item(popupMenu, "Flip All Horizontally", e -> referenceImageList.forEach(ReferenceImage::flipHorizontal));
+        MenuBuilder.item(popupMenu, "Flip All Vertically", e -> referenceImageList.forEach(ReferenceImage::flipVertical));
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Show All", e -> setAllVisible(true)));
-        popupMenu.add(MenuBuilder.item("Hide All", e -> setAllVisible(false)));
+        MenuBuilder.item(popupMenu, "Show All", e -> setAllVisible(true));
+        MenuBuilder.item(popupMenu, "Hide All", e -> setAllVisible(false));
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Close All", e -> closeAll()));
+        MenuBuilder.item(popupMenu, "Close All", e -> closeAll());
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("About", e -> {
+        MenuBuilder.item(popupMenu, "About", e -> {
             try {
                 Desktop.getDesktop().browse(new URI("https://github.com/x6ud/puppet-view"));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
-        }));
+        });
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.item("Exit", e -> System.exit(0)));
+        MenuBuilder.item(popupMenu, "Exit", e -> System.exit(0));
 
         Frame popupMenuHolder = new Frame();
         popupMenuHolder.setType(Window.Type.UTILITY);
@@ -89,6 +98,14 @@ public class Main {
         trayIcon.displayMessage("", "PuppetView is running.", TrayIcon.MessageType.NONE);
     }
 
+    private void waitForPopupMenuToDisappear() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+    }
+
     private void showImage(BufferedImage image) {
         referenceImageList.add(new ReferenceImage(image, this::removeReferenceImage));
     }
@@ -109,4 +126,5 @@ public class Main {
             iterator.remove();
         }
     }
+
 }
