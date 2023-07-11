@@ -1,4 +1,4 @@
-package com.github.x6ud.puppetview;
+package com.github.x6ud.puppetview.misc;
 
 public class Point {
     public double x;

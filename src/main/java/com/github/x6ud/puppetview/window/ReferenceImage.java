@@ -1,16 +1,15 @@
 package com.github.x6ud.puppetview.window;
 
-import com.github.x6ud.puppetview.Point;
-import com.github.x6ud.puppetview.PopupMenuBuilder;
+import com.github.x6ud.puppetview.misc.ImageUtils;
+import com.github.x6ud.puppetview.misc.MenuBuilder;
+import com.github.x6ud.puppetview.misc.Point;
 import com.sun.awt.AWTUtilities;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.util.function.Consumer;
 
 public class ReferenceImage extends JFrame {
@@ -82,62 +81,56 @@ public class ReferenceImage extends JFrame {
         });
 
         // right click menu
-        PopupMenu popupMenu = new PopupMenuBuilder()
-                .checkboxMenuItem("Flip Horizontally", flipHorizontal, menuItem -> flipHorizontalMenu = menuItem,
-                        e -> {
-                            flipHorizontal = e.getStateChange() == ItemEvent.SELECTED;
-                            rotationDeg = (360 - rotationDeg) % 360;
-                            update();
-                        }
-                )
-                .checkboxMenuItem("Flip Vertically", flipVertical, menuItem -> flipVerticalMenu = menuItem,
-                        e -> {
-                            flipVertical = e.getStateChange() == ItemEvent.SELECTED;
-                            rotationDeg = (360 - rotationDeg) % 360;
-                            update();
-                        }
-                )
-                .separator()
-                .menuItem("1:1 Size", e -> {
-                    scale = 1;
-                    update();
-                })
-                .menuItem("Reset Rotation and Flip", e -> {
-                    rotationDeg = 0;
-                    flipHorizontal = false;
-                    flipVertical = false;
-                    flipHorizontalMenu.setState(false);
-                    flipVerticalMenu.setState(false);
-                    update();
-                })
-                .menuItem("Reset Opacity", e -> {
-                    opacity = 1;
-                    update();
-                })
-                .separator()
-                .checkboxMenuItem("Collapsed", collapsed, menuItem -> collapsedMenu = menuItem,
-                        e -> {
-                            collapsed = e.getStateChange() == ItemEvent.SELECTED;
-                            update();
-                        }
-                )
-                .separator()
-                .checkboxMenuItem("Greyscale", greyscale,
-                        e -> {
-                            greyscale = e.getStateChange() == ItemEvent.SELECTED;
-                            repaint();
-                        }
-                )
-                .separator()
-                .menuItem("Hide", e -> {
-                    setVisible(false);
-                })
+        PopupMenu popupMenu = MenuBuilder.popup();
+        flipHorizontalMenu = MenuBuilder.checkbox("Flip Horizontally", flipHorizontal, e -> {
+            flipHorizontal = e.getStateChange() == ItemEvent.SELECTED;
+            rotationDeg = (360 - rotationDeg) % 360;
+            update();
+        });
+        popupMenu.add(flipHorizontalMenu);
+        flipVerticalMenu = MenuBuilder.checkbox("Flip Vertically", flipVertical, e -> {
+            flipVertical = e.getStateChange() == ItemEvent.SELECTED;
+            rotationDeg = (360 - rotationDeg) % 360;
+            update();
+        });
+        popupMenu.add(flipVerticalMenu);
+        popupMenu.addSeparator();
+        popupMenu.add(MenuBuilder.item("1:1 Size", e -> {
+            scale = 1;
+            update();
+        }));
+        popupMenu.add(MenuBuilder.item("Reset Rotation and Flip", e -> {
+            rotationDeg = 0;
+            flipHorizontal = false;
+            flipVertical = false;
+            flipHorizontalMenu.setState(false);
+            flipVerticalMenu.setState(false);
+            update();
+        }));
+        popupMenu.add(MenuBuilder.item("Reset Opacity", e -> {
+            opacity = 1;
+            update();
+        }));
+        popupMenu.addSeparator();
+        collapsedMenu = MenuBuilder.checkbox("Collapsed", collapsed, e -> {
+            collapsed = e.getStateChange() == ItemEvent.SELECTED;
+            update();
+        });
+        popupMenu.add(collapsedMenu);
+        popupMenu.addSeparator();
+        popupMenu.add(MenuBuilder.checkbox("Greyscale", greyscale, e -> {
+            greyscale = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        }));
+        popupMenu.addSeparator();
+        popupMenu.add(MenuBuilder.item("Hide", e -> {
+            setVisible(false);
+        }));
+        popupMenu.add(MenuBuilder.item("Close", e -> {
+            close();
+            closeCallback.accept(this);
+        }));
 
-                .menuItem("Close", e -> {
-                    close();
-                    closeCallback.accept(this);
-                })
-                .get();
 
         // event listeners
         {
@@ -411,8 +404,7 @@ public class ReferenceImage extends JFrame {
         if (cachedGreyscaleImage != null) {
             return cachedGreyscaleImage;
         }
-        return cachedGreyscaleImage =
-                new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null).filter(image, null);
+        return cachedGreyscaleImage = ImageUtils.greyScale(image);
     }
 
 }

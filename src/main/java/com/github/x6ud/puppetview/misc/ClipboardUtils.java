@@ -1,4 +1,4 @@
-package com.github.x6ud.puppetview;
+package com.github.x6ud.puppetview.misc;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
