@@ -41,4 +41,43 @@ public class ClipboardUtils {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
 
+    public static void setImage(Image image) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new TransferableImage(image), null);
+    }
+
+    // https://stackoverflow.com/questions/4552045/copy-bufferedimage-to-clipboard
+    private static class TransferableImage implements Transferable {
+        private final Image image;
+
+        public TransferableImage(Image i) {
+            this.image = i;
+        }
+
+        public Object getTransferData(DataFlavor flavor)
+                throws UnsupportedFlavorException, IOException {
+            if (flavor.equals(DataFlavor.imageFlavor) && image != null) {
+                return image;
+            } else {
+                throw new UnsupportedFlavorException(flavor);
+            }
+        }
+
+        public DataFlavor[] getTransferDataFlavors() {
+            DataFlavor[] flavors = new DataFlavor[1];
+            flavors[0] = DataFlavor.imageFlavor;
+            return flavors;
+        }
+
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            DataFlavor[] flavors = getTransferDataFlavors();
+            for (DataFlavor dataFlavor : flavors) {
+                if (flavor.equals(dataFlavor)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+
 }

@@ -23,7 +23,7 @@ public class Main {
 
     private void start() throws Exception {
         PopupMenu popupMenu = MenuBuilder.popup();
-        popupMenu.add(MenuBuilder.item("Screenshot", e -> {
+        popupMenu.add(MenuBuilder.item("Screenshot and Show", e -> {
             try {
                 Thread.sleep(500); // wait for popup menu to disappear
             } catch (InterruptedException e1) {
@@ -36,6 +36,15 @@ public class Main {
             if (image != null) {
                 showImage(image);
             }
+        }));
+        popupMenu.addSeparator();
+        popupMenu.add(MenuBuilder.item("Screenshot", e -> {
+            try {
+                Thread.sleep(500); // wait for popup menu to disappear
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            new Screenshot(ClipboardUtils::setImage).screenshot();
         }));
         popupMenu.addSeparator();
         popupMenu.add(MenuBuilder.item("Flip All Horizontally", e -> referenceImageList.forEach(ReferenceImage::flipHorizontal)));

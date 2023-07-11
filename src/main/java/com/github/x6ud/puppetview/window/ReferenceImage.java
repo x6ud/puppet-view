@@ -1,5 +1,6 @@
 package com.github.x6ud.puppetview.window;
 
+import com.github.x6ud.puppetview.misc.ClipboardUtils;
 import com.github.x6ud.puppetview.misc.ImageUtils;
 import com.github.x6ud.puppetview.misc.MenuBuilder;
 import com.github.x6ud.puppetview.misc.Point;
@@ -94,6 +95,10 @@ public class ReferenceImage extends JFrame {
             update();
         });
         popupMenu.add(flipVerticalMenu);
+        popupMenu.add(MenuBuilder.checkbox("Greyscale", greyscale, e -> {
+            greyscale = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        }));
         popupMenu.addSeparator();
         popupMenu.add(MenuBuilder.item("1:1 Size", e -> {
             scale = 1;
@@ -118,9 +123,8 @@ public class ReferenceImage extends JFrame {
         });
         popupMenu.add(collapsedMenu);
         popupMenu.addSeparator();
-        popupMenu.add(MenuBuilder.checkbox("Greyscale", greyscale, e -> {
-            greyscale = e.getStateChange() == ItemEvent.SELECTED;
-            repaint();
+        popupMenu.add(MenuBuilder.item("Copy to Clipboard", e -> {
+            ClipboardUtils.setImage(image);
         }));
         popupMenu.addSeparator();
         popupMenu.add(MenuBuilder.item("Hide", e -> {
