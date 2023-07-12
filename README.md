@@ -1,7 +1,12 @@
+# PuppetView
 Screenshots and displaying reference images on the screen.
 
 ![](./screenshot-1.jpg)
 ![](./screenshot-2.png)
+
+## Download
+
+[v1.0.0.4](https://github.com/x6ud/puppet-view/releases/download/1.0.0.4/puppet-view.exe) (for Windows)
 
 ## Usage
 
