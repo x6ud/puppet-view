@@ -1,18 +1,7 @@
-PuppetView is an application for displaying reference images on screen.
+Screenshots and displaying reference images on the screen.
 
-![](./screenshot.png)
-
-## Run
-
-```
-mvn clean compile exec:java
-```
-
-## Build
-
-```
-mvn clean compile assembly:single
-```
+![](./screenshot-1.jpg)
+![](./screenshot-2.png)
 
 ## Usage
 
@@ -25,3 +14,15 @@ mvn clean compile assembly:single
 | Shift + Ctrl + Wheel | Rotate proportionally |
 | Alt + Wheel          | Change opacity |
 | Double Click         | Collapse |
+
+## Run
+
+```
+mvn clean compile exec:java
+```
+
+## Build
+
+```
+mvn clean compile assembly:single
+```
