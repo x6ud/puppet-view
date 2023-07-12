@@ -8,7 +8,7 @@ Screenshots and displaying reference images on the screen.
 
 [v1.0.0.4 EXE](https://github.com/x6ud/puppet-view/releases/download/1.0.0.4/puppet-view.exe)
 
-[v1.0.0.4 JAR](https://github.com/x6ud/puppet-view/releases/download/1.0.0.4/jar.zip)
+[v1.0.0.4 JAR](https://github.com/x6ud/puppet-view/releases/download/1.0.0.4/jar.zip) (Required Java 8)
 
 ## Usage
 
