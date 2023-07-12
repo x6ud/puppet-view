@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.function.Consumer;
 
 public class ReferenceImage extends JFrame {
@@ -24,21 +25,22 @@ public class ReferenceImage extends JFrame {
     private static final int COLLAPSED_SIZE = 86;
     private static final float COLLAPSED_OPACITY = 0.75f;
 
-    private BufferedImage image;
-    private int imageWidth;
-    private int imageHeight;
+    private final BufferedImage image;
+    private final int imageWidth;
+    private final int imageHeight;
 
     private boolean mouseOver = false;
 
     private boolean collapsed = false;
-    private CheckboxMenuItem collapsedMenu;
+    private final CheckboxMenuItem collapsedMenu;
 
     private boolean flipHorizontal = false;
     private boolean flipVertical = false;
-    private CheckboxMenuItem flipHorizontalMenu;
-    private CheckboxMenuItem flipVerticalMenu;
+    private final CheckboxMenuItem flipHorizontalMenu;
+    private final CheckboxMenuItem flipVerticalMenu;
 
     private boolean greyscale = false;
+    private final CheckboxMenuItem greyscaleMenu;
     private BufferedImage cachedGreyscaleImage = null;
 
     private double scale = 1;
@@ -93,7 +95,7 @@ public class ReferenceImage extends JFrame {
             rotationDeg = (360 - rotationDeg) % 360;
             update();
         });
-        MenuBuilder.checkbox(popupMenu, "Greyscale", greyscale, e -> {
+        greyscaleMenu = MenuBuilder.checkbox(popupMenu, "Greyscale", greyscale, e -> {
             greyscale = e.getStateChange() == ItemEvent.SELECTED;
             repaint();
         });
@@ -405,6 +407,64 @@ public class ReferenceImage extends JFrame {
             return cachedGreyscaleImage;
         }
         return cachedGreyscaleImage = ImageUtils.greyScale(image);
+    }
+
+    /* ============================================== */
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public static class ImageState implements Serializable {
+        private static final long serialVersionUID = 1L;
+        public boolean visible;
+        public boolean collapsed;
+        public boolean flipHorizontal;
+        public boolean flipVertical;
+        public boolean greyscale;
+        public double scale;
+        public int rotationDeg;
+        public float opacity;
+        public int x;
+        public int y;
+        public double centerX;
+        public double centerY;
+    }
+
+    public ImageState getImageState() {
+        ImageState state = new ImageState();
+        state.visible = isVisible();
+        state.collapsed = collapsed;
+        state.flipHorizontal = flipHorizontal;
+        state.flipVertical = flipVertical;
+        state.greyscale = greyscale;
+        state.scale = scale;
+        state.rotationDeg = rotationDeg;
+        state.opacity = opacity;
+        state.x = getX();
+        state.y = getY();
+        state.centerX = lastCenterX;
+        state.centerY = lastCenterY;
+        return state;
+    }
+
+    public void setImageState(ImageState state) {
+        setVisible(state.visible);
+        collapsed = state.collapsed;
+        collapsedMenu.setState(collapsed);
+        flipHorizontal = state.flipHorizontal;
+        flipHorizontalMenu.setState(flipHorizontal);
+        flipVertical = state.flipVertical;
+        flipVerticalMenu.setState(flipVertical);
+        greyscale = state.greyscale;
+        greyscaleMenu.setState(greyscale);
+        scale = state.scale;
+        rotationDeg = state.rotationDeg;
+        opacity = state.opacity;
+        setLocation(state.x, state.y);
+        lastCenterX = state.centerX;
+        lastCenterY = state.centerY;
+        update();
     }
 
 }

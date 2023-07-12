@@ -1,5 +1,6 @@
 /config.properties
 /launch4j.xml
+*.pv-workspace
 
 # Editor directories and files
 .idea

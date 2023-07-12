@@ -29,11 +29,11 @@ public class ClipboardUtils {
         if (img instanceof BufferedImage) {
             return (BufferedImage) img;
         }
-        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D bGr = bimage.createGraphics();
+        BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = bi.createGraphics();
         bGr.drawImage(img, 0, 0, null);
         bGr.dispose();
-        return bimage;
+        return bi;
     }
 
     public static void setString(String str) {
