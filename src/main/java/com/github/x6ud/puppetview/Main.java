@@ -13,6 +13,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
@@ -125,10 +127,10 @@ public class Main {
         });
         popupMenu.addSeparator();
         MenuBuilder.item(popupMenu, "Exit", e -> {
-            saveWorkspace(DEFAULT_WORKSPACE_PATH);
-            System.exit(0);
+            mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
         });
 
+        // hide main window
         mainFrame.setType(Window.Type.UTILITY);
         mainFrame.setUndecorated(true);
         mainFrame.setResizable(false);
@@ -150,6 +152,15 @@ public class Main {
             }
         });
         SystemTray.getSystemTray().add(trayIcon);
+
+        // auto save current workspace before closing
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveWorkspace(DEFAULT_WORKSPACE_PATH);
+                System.exit(0);
+            }
+        });
 
         // load last workspace
         if (Files.exists(Paths.get(DEFAULT_WORKSPACE_PATH))) {
