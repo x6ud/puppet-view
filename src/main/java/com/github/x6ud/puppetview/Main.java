@@ -48,8 +48,7 @@ public class Main {
             new Screenshot(this::showImage).screenshot();
         });
         MenuBuilder.item(popupMenu, "Load Clipboard", e -> {
-            BufferedImage image = ClipboardUtils.getImage();
-            if (image != null) {
+            for (BufferedImage image : ClipboardUtils.getImages()) {
                 showImage(image);
             }
         });
@@ -69,6 +68,7 @@ public class Main {
         popupMenu.addSeparator();
         MenuBuilder.item(popupMenu, "Flip All Horizontally", e -> referenceImageList.forEach(ReferenceImage::flipHorizontal));
         MenuBuilder.item(popupMenu, "Flip All Vertically", e -> referenceImageList.forEach(ReferenceImage::flipVertical));
+        popupMenu.addSeparator();
         MenuBuilder.item(popupMenu, "Show All", e -> setAllVisible(true));
         MenuBuilder.item(popupMenu, "Hide All", e -> setAllVisible(false));
         MenuBuilder.item(popupMenu, "Close All", e -> closeAll());
@@ -110,9 +110,7 @@ public class Main {
         MenuBuilder.radioGroup(
                         MenuBuilder.menu(popupMenu, "Color Format"),
                         colorPickerMode,
-                        mode -> {
-                            colorPickerMode = mode;
-                        })
+                        mode -> colorPickerMode = mode)
                 .item("#ffffff", "html")
                 .item("0xffffff", "hex")
                 .item("rgb(255, 255, 255)", "css")
@@ -126,9 +124,7 @@ public class Main {
             }
         });
         popupMenu.addSeparator();
-        MenuBuilder.item(popupMenu, "Exit", e -> {
-            mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
-        });
+        MenuBuilder.item(popupMenu, "Exit", e -> mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING)));
 
         // hide main window
         mainFrame.setType(Window.Type.UTILITY);
@@ -230,7 +226,7 @@ public class Main {
 
     private void saveWorkspace(String path) {
         try (FileOutputStream f = new FileOutputStream(path);
-             ObjectOutputStream os = new ObjectOutputStream(f);
+             ObjectOutputStream os = new ObjectOutputStream(f)
         ) {
             List<WorkspaceImage> workspace = new ArrayList<>();
             for (ReferenceImage item : referenceImageList) {
@@ -244,8 +240,9 @@ public class Main {
 
     private void loadWorkspace(String path) {
         try (FileInputStream f = new FileInputStream(path);
-             ObjectInputStream is = new ObjectInputStream(f);
+             ObjectInputStream is = new ObjectInputStream(f)
         ) {
+            @SuppressWarnings("unchecked")
             List<WorkspaceImage> workspace = (List<WorkspaceImage>) is.readObject();
             closeAll();
             for (WorkspaceImage record : workspace) {

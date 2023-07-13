@@ -1,28 +1,48 @@
 package com.github.x6ud.puppetview.misc;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClipboardUtils {
 
-    public static BufferedImage getImage() {
-        Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-            try {
-                Object data = transferable.getTransferData(DataFlavor.imageFlavor);
-                if (data instanceof Image) {
-                    return toBufferedImage((Image) transferable.getTransferData(DataFlavor.imageFlavor));
+    public static List<BufferedImage> getImages() {
+        List<BufferedImage> ret = new ArrayList<>();
+        try {
+            Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+            if (transferable != null) {
+                if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+                    ret.add(toBufferedImage((Image) transferable.getTransferData(DataFlavor.imageFlavor)));
+                } else if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    @SuppressWarnings("unchecked")
+                    List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    for (File file : files) {
+                        try {
+                            if (!file.isFile()) {
+                                continue;
+                            }
+                            BufferedImage image = ImageIO.read(file);
+                            if (image != null) {
+                                ret.add(image);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-            } catch (UnsupportedFlavorException | IOException e) {
-                return null;
             }
+        } catch (UnsupportedFlavorException | IOException e) {
+            return ret;
         }
-        return null;
+        return ret;
     }
 
     private static BufferedImage toBufferedImage(Image img) {
@@ -53,8 +73,7 @@ public class ClipboardUtils {
             this.image = i;
         }
 
-        public Object getTransferData(DataFlavor flavor)
-                throws UnsupportedFlavorException, IOException {
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(DataFlavor.imageFlavor) && image != null) {
                 return image;
             } else {
