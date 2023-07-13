@@ -55,7 +55,7 @@ public class Main {
         MenuBuilder.item(popupMenu, "Load Files...", e -> {
             FileDialog fileDialog = new FileDialog(mainFrame);
             fileDialog.setMultipleMode(true);
-            fileDialog.setFile("*.png;*.jpg;*.jpeg;*.jfif;*.pjpeg;*.pjp;*.gif;*.bmp;*.tiff");
+            fileDialog.setFile("*.png;*.jpg;*.jpeg;*.jfif;*.pjpeg;*.pjp;*.gif;*.bmp;*.tiff;*.webp");
             fileDialog.setVisible(true);
             for (File file : fileDialog.getFiles()) {
                 try {
